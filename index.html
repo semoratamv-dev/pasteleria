@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pastelería Dulce Delicia - Repostería Artesanal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bakery: {
+                            50: '#fdf8f6',
+                            100: '#f2e8e5',
+                            200: '#e8d5ce',
+                            300: '#d7b3a5',
+                            400: '#c38d78',
+                            500: '#ab6c55',
+                            600: '#95543e',
+                            700: '#7c4331',
+                            800: '#67382b',
+                            900: '#553026',
+                        },
+                        cream: {
+                            50: '#fffdfa',
+                            100: '#fef9f0',
+                            200: '#fdf2de',
+                            300: '#fae3c0',
+                        },
+                        berry: {
+                            500: '#c0392b',
+                            600: '#a93226',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fdf8f6;
+            color: #4a3b32;
+        }
+        .font-serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f2e8e5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c38d78;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ab6c55;
+        }
+        .animate-bounce-short {
+            animation: bounce 0.6s ease-in-out 1;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-20 md:pb-0 selection:bg-bakery-200 selection:text-bakery-900">
+
+    <!-- Header / Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-cream-50/95 backdrop-blur-md border-b border-bakery-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
+                    <div class="w-11 h-11 rounded-full bg-bakery-500 text-white flex items-center justify-center shadow-md transform hover:rotate-12 transition-transform">
+                        <i class="fa-solid fa-cake-candles text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-serif-title text-2xl font-bold tracking-tight text-bakery-900 block leading-tight">Dulce Delicia</span>
+                        <span class="text-xs uppercase tracking-widest text-bakery-500 font-semibold block">Pastelería Artesanal</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Quick Actions -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <button onclick="openModal('add-product-modal')" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-bakery-100 text-bakery-800 text-sm font-medium hover:bg-bakery-200 transition-colors shadow-sm">
+                        <i class="fa-solid fa-plus text-bakery-600"></i>
+                        <span>Añadir Producto</span>
+                    </button>
+
+                    <button onclick="toggleFavoritesFilter()" id="fav-filter-btn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-cream-100 border border-bakery-200 text-bakery-800 text-sm font-medium hover:bg-bakery-100 transition-colors">
+                        <i class="fa-solid fa-heart text-rose-500"></i>
+                        <span>Favoritos</span>
+                        <span id="fav-count-badge" class="ml-1 bg-rose-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button onclick="toggleCartDrawer()" class="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-bakery-600 hover:bg-bakery-700 text-white text-sm font-semibold transition-all shadow-md hover:shadow-lg active:scale-95">
+                        <i class="fa-solid fa-basket-shopping text-amber-200"></i>
+                        <span>Mi Pedido</span>
+                        <span id="cart-count-badge" class="bg-amber-400 text-bakery-900 text-xs font-black px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                </div>
+
+                <!-- Mobile Action Toggle Buttons -->
+                <div class="flex items-center space-x-2 md:hidden">
+                    <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-full bg-bakery-600 text-white shadow">
+                        <i class="fa-solid fa-basket-shopping text-lg"></i>
+                        <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-amber-400 text-bakery-900 text-xs font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">0</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="relative bg-gradient-to-r from-bakery-900 via-bakery-800 to-bakery-900 text-white py-12 md:py-16 overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e8d5ce_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="max-w-2xl">
+                <span class="inline-block px-3 py-1 bg-bakery-500/40 backdrop-blur-sm border border-bakery-300/30 text-amber-200 text-xs uppercase tracking-wider font-semibold rounded-full mb-3">
+                    <i class="fa-solid fa-wheat-awn mr-1"></i> Horno Diario & Ingredientes Naturales
+                </span>
+                <h1 class="font-serif-title text-3xl sm:text-5xl font-bold leading-tight mb-4 text-cream-50">
+                    Sabor artesanal directo a tu mesa
+                </h1>
+                <p class="text-bakery-100 text-base sm:text-lg mb-6 leading-relaxed">
+                    Tartas personalizadas, bollería recien horneada y postres para endulzar cada momento especial. ¡Haz tu pedido y te lo preparamos por WhatsApp!
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#catalog" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-bakery-900 font-bold text-sm transition-all shadow-md">
+                        <i class="fa-solid fa-utensils"></i> Explorar Catálogo
+                    </a>
+                    <button onclick="openWhatsAppDirect()" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all shadow-md">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Consulta Directa
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+        
+        <!-- Search & Category Filters Bar -->
+        <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-bakery-100 mb-8 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                
+                <!-- Search Box -->
+                <div class="relative flex-grow max-w-md">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-bakery-400"></i>
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Buscar tartas, croissants, macarons..." class="w-full pl-11 pr-4 py-2.5 bg-cream-50 rounded-full border border-bakery-200 focus:outline-none focus:ring-2 focus:ring-bakery-500 text-sm">
+                </div>
+
+                <!-- Fast Actions & Counters -->
+                <div class="flex items-center justify-between md:justify-end gap-3 text-sm text-bakery-600">
+                    <span id="product-count" class="font-medium">Mostrando 10 productos</span>
+                    <button onclick="openModal('add-product-modal')" class="md:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bakery-100 text-bakery-800 text-xs font-semibold">
+                        <i class="fa-solid fa-plus"></i> Añadir
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar text-sm" id="category-pills">
+                <button onclick="filterCategory('all')" data-cat="all" class="cat-pill active px-4 py-2 rounded-full font-medium whitespace-nowrap bg-bakery-600 text-white transition-colors">
+                    Todos
+                </button>
+                <button onclick="filterCategory('Tartas')" data-cat="Tartas" class="cat-pill px-4 py-2 rounded-full font-medium whitespace-nowrap bg-cream-100 text-bakery-800 hover:bg-bakery-100 transition-colors border border-bakery-100">
+                    🎂 Tartas
+                </button>
+                <button onclick="filterCategory('Bollería')" data-cat="Bollería" class="cat-pill px-4 py-2 rounded-full font-medium whitespace-nowrap bg-cream-100 text-bakery-800 hover:bg-bakery-100 transition-colors border border-bakery-100">
+                    🥐 Bollería
+                </button>
+                <button onclick="filterCategory('Pasteles')" data-cat="Pasteles" class="cat-pill px-4 py-2 rounded-full font-medium whitespace-nowrap bg-cream-100 text-bakery-800 hover:bg-bakery-100 transition-colors border border-bakery-100">
+                    🧁 Pasteles
+                </button>
+                <button onclick="filterCategory('Especiales')" data-cat="Especiales" class="cat-pill px-4 py-2 rounded-full font-medium whitespace-nowrap bg-cream-100 text-bakery-800 hover:bg-bakery-100 transition-colors border border-bakery-100">
+                    ✨ Especiales
+                </button>
+                <button onclick="toggleFavoritesFilter()" id="fav-pill-btn" class="cat-pill px-4 py-2 rounded-full font-medium whitespace-nowrap bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors">
+                    ❤️ Favoritos
+                </button>
+            </div>
+        </div>
+
+        <!-- Product Grid Display -->
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Dynamic JavaScript content will load here -->
+        </div>
+
+        <!-- Empty State Container -->
+        <div id="empty-state" class="hidden text-center py-16 bg-white rounded-3xl border border-dashed border-bakery-200 my-8">
+            <div class="w-20 h-20 bg-cream-100 rounded-full flex items-center justify-center mx-auto mb-4 text-bakery-400">
+                <i class="fa-solid fa-cookie-bite text-3xl"></i>
+            </div>
+            <h3 class="font-serif-title text-xl font-bold text-bakery-900 mb-1">No encontramos productos</h3>
+            <p class="text-bakery-500 text-sm max-w-sm mx-auto mb-6">Prueba a buscar con otra palabra o borra tus filtros actuales.</p>
+            <button onclick="resetFilters()" class="px-5 py-2.5 bg-bakery-600 text-white font-medium text-sm rounded-full hover:bg-bakery-700 transition-colors shadow">
+                Restablecer Filtros
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Cart Drawer (Slide-over) -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none transition-opacity duration-300 opacity-0">
+        <!-- Backdrop overlay -->
+        <div id="cart-backdrop" onclick="toggleCartDrawer()" class="absolute inset-0 bg-bakery-900/40 backdrop-blur-sm transition-opacity"></div>
+
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10 pointer-events-auto">
+            <div id="cart-panel" class="w-screen max-w-md bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+                
+                <!-- Drawer Header -->
+                <div class="p-5 bg-cream-50 border-b border-bakery-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-bakery-100 text-bakery-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-basket-shopping"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-serif-title text-lg font-bold text-bakery-900">Tu Pedido</h2>
+                            <p class="text-xs text-bakery-500">Resumen y envío directo por WhatsApp</p>
+                        </div>
+                    </div>
+                    <button onclick="toggleCartDrawer()" class="p-2 text-bakery-400 hover:text-bakery-700 rounded-full hover:bg-bakery-100 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Drawer Content / Items list -->
+                <div id="cart-items-container" class="flex-grow overflow-y-auto p-5 space-y-4">
+                    <!-- Dynamic Cart Items Output -->
+                </div>
+
+                <!-- Order Form Details & WhatsApp Footer -->
+                <div class="p-5 bg-cream-50 border-t border-bakery-100 space-y-4">
+                    
+                    <!-- Customer Information Inputs -->
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">Nombre para el Pedido</label>
+                            <input type="text" id="customer-name" placeholder="Ej: María García" class="w-full px-3 py-2 bg-white rounded-lg border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">Fecha / Notas especiales</label>
+                            <input type="text" id="order-notes" placeholder="Ej: Recoger hoy a las 18h / Sin frutos secos" class="w-full px-3 py-2 bg-white rounded-lg border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Price summary -->
+                    <div class="border-t border-bakery-200 pt-3 space-y-1">
+                        <div class="flex justify-between text-sm text-bakery-600">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal">0,00 €</span>
+                        </div>
+                        <div class="flex justify-between text-base font-bold text-bakery-900 pt-1">
+                            <span>Total estimado:</span>
+                            <span id="cart-total" class="text-bakery-600">0,00 €</span>
+                        </div>
+                    </div>
+
+                    <!-- Send WhatsApp Button -->
+                    <button onclick="sendOrderViaWhatsApp()" id="whatsapp-submit-btn" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-emerald-600/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                        <span>Enviar Pedido por WhatsApp</span>
+                    </button>
+                    
+                    <p class="text-[11px] text-center text-bakery-400">Se abrirá WhatsApp con el resumen de tu pedido pre-escribido.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add New Product -->
+    <div id="add-product-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-bakery-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-bakery-100 transform scale-95 transition-transform duration-300" id="add-modal-card">
+            
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <h3 class="font-serif-title text-xl font-bold text-bakery-900">Añadir Nuevo Producto</h3>
+                </div>
+                <button onclick="closeModal('add-product-modal')" class="text-bakery-400 hover:text-bakery-700 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="new-product-form" onsubmit="handleAddNewProduct(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">Nombre del Dulce *</label>
+                    <input type="text" id="new-name" required placeholder="Ej. Tarta de Limón y Merengue" class="w-full px-3.5 py-2.5 rounded-xl border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">Categoría *</label>
+                        <select id="new-category" required class="w-full px-3.5 py-2.5 rounded-xl border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none bg-white">
+                            <option value="Tartas">Tartas</option>
+                            <option value="Bollería">Bollería</option>
+                            <option value="Pasteles">Pasteles</option>
+                            <option value="Especiales">Especiales</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">Precio (€) *</label>
+                        <input type="number" step="0.01" min="0.10" id="new-price" required placeholder="18.50" class="w-full px-3.5 py-2.5 rounded-xl border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">Descripción Breve</label>
+                    <textarea id="new-desc" rows="2" placeholder="Crujiente base con suave crema de limón y suave merengue flambeado..." class="w-full px-3.5 py-2.5 rounded-xl border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-bakery-700 mb-1">URL de Imagen (Opcional)</label>
+                    <input type="url" id="new-image" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-bakery-200 text-sm focus:ring-2 focus:ring-bakery-500 outline-none">
+                    <p class="text-[11px] text-bakery-400 mt-1">Si la dejas vacía, usaremos una bonita foto por defecto.</p>
+                </div>
+
+                <div class="pt-2 flex gap-3">
+                    <button type="button" onclick="closeModal('add-product-modal')" class="w-1/2 py-2.5 border border-bakery-200 text-bakery-700 font-semibold rounded-xl hover:bg-bakery-50 transition-colors text-sm">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-bakery-600 hover:bg-bakery-700 text-white font-bold rounded-xl transition-colors shadow text-sm">
+                        Guardar Producto
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Fixed Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-bakery-200 z-40 px-4 py-2 flex items-center justify-around shadow-lg">
+        <button onclick="resetFilters(); window.scrollTo({top: 0, behavior: 'smooth'})" class="flex flex-col items-center gap-1 text-bakery-600 hover:text-bakery-900 focus:text-bakery-900">
+            <i class="fa-solid fa-store text-lg"></i>
+            <span class="text-[10px] font-semibold">Inicio</span>
+        </button>
+
+        <button onclick="toggleFavoritesFilter()" class="flex flex-col items-center gap-1 text-bakery-600 hover:text-rose-600 relative">
+            <i class="fa-solid fa-heart text-lg text-rose-500"></i>
+            <span class="text-[10px] font-semibold">Favoritos</span>
+            <span id="mobile-fav-badge" class="absolute -top-1 right-2 bg-rose-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <button onclick="openModal('add-product-modal')" class="flex flex-col items-center justify-center w-11 h-11 bg-amber-500 text-bakery-950 rounded-full -mt-5 shadow-lg border-2 border-white font-bold">
+            <i class="fa-solid fa-plus text-lg"></i>
+        </button>
+
+        <button onclick="toggleCartDrawer()" class="flex flex-col items-center gap-1 text-bakery-600 hover:text-bakery-900 relative">
+            <i class="fa-solid fa-basket-shopping text-lg"></i>
+            <span class="text-[10px] font-semibold">Carrito</span>
+            <span id="bottom-cart-badge" class="absolute -top-1 right-2 bg-bakery-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        </button>
+    </nav>
+
+    <!-- Custom Toast Notification Container -->
+    <div id="toast-container" class="fixed top-24 right-4 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <script>
+        // Default 10 Initial Products with realistic bakery images, prices, descriptions, and categories
+        const INITIAL_PRODUCTS = [
+            {
+                id: 1,
+                name: 'Tarta Red Velvet',
+                category: 'Tartas',
+                price: 24.50,
+                description: 'Bizcocho esponjoso de cacao suave con capas de cobertura cremosa de queso mascarpone.',
+                image: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?auto=format&fit=crop&w=600&q=80',
+                badge: 'Más Vendido'
+            },
+            {
+                id: 2,
+                name: 'Croissant de Almendras',
+                category: 'Bollería',
+                price: 2.80,
+                description: 'Hojaldre artesanal de mantequilla relleno de crema frangipane y láminas de almendra tostada.',
+                image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=600&q=80',
+                badge: 'Recién Horneado'
+            },
+            {
+                id: 3,
+                name: 'Tarta de Queso La Viña',
+                category: 'Tartas',
+                price: 22.00,
+                description: 'Cremosa por dentro y tostada por fuera, elaborada con queso cremoso y huevo natural.',
+                image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=600&q=80',
+                badge: 'Especialidad'
+            },
+            {
+                id: 4,
+                name: 'Milhojas de Crema y Nata',
+                category: 'Pasteles',
+                price: 3.50,
+                description: 'Capas crujientes de hojaldre caramelo rellenas de crema pastelera vainillada y nata fresca.',
+                image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 5,
+                name: 'Macarons Variados (12 ud)',
+                category: 'Especiales',
+                price: 14.00,
+                description: 'Surtido francés de frambuesa, pistacho, chocolate belga, vainilla bourbon y salted caramel.',
+                image: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=600&q=80',
+                badge: 'Popular'
+            },
+            {
+                id: 6,
+                name: 'Palmera de Chocolate Belga',
+                category: 'Bollería',
+                price: 2.20,
+                description: 'Hojaldre crujiente bañado en chocolate negro puro 70% cacao.',
+                image: 'https://images.unsplash.com/photo-1621236378699-8597faf6a176?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 7,
+                name: 'Tarta San Marcos',
+                category: 'Tartas',
+                price: 26.00,
+                description: 'Bizcocho calado con almíbar, capas de nata y trufa, cubierta de yema tostada artesanal.',
+                image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 8,
+                name: 'Cinnamon Rolls (Rollo Canela)',
+                category: 'Bollería',
+                price: 3.00,
+                description: 'Rollos tiernos aromatizados con canela de Ceylán y glaseado suave de queso crema.',
+                image: 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 9,
+                name: 'Éclair de Chocolate y Café',
+                category: 'Pasteles',
+                price: 3.20,
+                description: 'Pasta choux rellena de crema pastelera de café arábica y glaseado de chocolate fondant.',
+                image: 'https://images.unsplash.com/photo-1612203985729-70726954388c?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 10,
+                name: 'Donuts Artesanales de Pistacho',
+                category: 'Especiales',
+                price: 2.90,
+                description: 'Masa fermentada super esponjosa con cobertura de crema de pistacho siciliano y trocitos.',
+                image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80',
+                badge: 'Nuevo'
+            }
+        ];
+
+        // State variables
+        let products = [];
+        let favorites = new Set();
+        let cart = {}; // { productId: quantity }
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let onlyFavorites = false;
+
+        // WhatsApp Contact Phone Number (Bakery WhatsApp)
+        const BAKERY_PHONE = '34600000000'; 
+
+        // Initialization on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderProducts();
+            updateCartUI();
+            updateFavBadges();
+        });
+
+        // Save and Load state from LocalStorage
+        function loadState() {
+            const savedProducts = localStorage.getItem('dulce_products');
+            if (savedProducts) {
+                try { products = JSON.parse(savedProducts); } catch (e) { products = INITIAL_PRODUCTS; }
+            } else {
+                products = [...INITIAL_PRODUCTS];
+                saveProducts();
+            }
+
+            const savedFavs = localStorage.getItem('dulce_favs');
+            if (savedFavs) {
+                try { favorites = new Set(JSON.parse(savedFavs)); } catch (e) { favorites = new Set(); }
+            }
+
+            const savedCart = localStorage.getItem('dulce_cart');
+            if (savedCart) {
+                try { cart = JSON.parse(savedCart); } catch (e) { cart = {}; }
+            }
+        }
+
+        function saveProducts() {
+            localStorage.setItem('dulce_products', JSON.stringify(products));
+        }
+
+        function saveFavs() {
+            localStorage.setItem('dulce_favs', JSON.stringify(Array.from(favorites)));
+        }
+
+        function saveCart() {
+            localStorage.setItem('dulce_cart', JSON.stringify(cart));
+        }
+
+        // Render Product Cards Grid
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const emptyState = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            const filtered = products.filter(p => {
+                const matchesCat = currentCategory === 'all' || p.category === currentCategory;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      p.description.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesFav = !onlyFavorites || favorites.has(p.id);
+                return matchesCat && matchesSearch && matchesFav;
+            });
+
+            document.getElementById('product-count').textContent = `Mostrando ${filtered.length} de ${products.length} productos`;
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                grid.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(product => {
+                const isFav = favorites.has(product.id);
+                const quantityInCart = cart[product.id] || 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-bakery-100 flex flex-col group relative";
+
+                card.innerHTML = `
+                    <!-- Product Image & Overlay Badges -->
+                    <div class="relative h-48 sm:h-52 overflow-hidden bg-cream-100">
+                        <img src="${product.image}" alt="${product.name}" 
+                             onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80'"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        
+                        <!-- Top Badges -->
+                        <div class="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+                            <span class="px-2.5 py-1 rounded-full bg-cream-50/90 backdrop-blur-md text-bakery-900 text-xs font-semibold shadow-sm">
+                                ${product.category}
+                            </span>
+                            ${product.badge ? `
+                                <span class="px-2.5 py-1 rounded-full bg-amber-400 text-bakery-950 text-[11px] font-extrabold shadow-sm">
+                                    ${product.badge}
+                                </span>
+                            ` : ''}
+                        </div>
+
+                        <!-- Favorite Heart Toggle Button -->
+                        <button onclick="toggleFavorite(${product.id})" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-rose-500 shadow-md hover:scale-110 active:scale-95 transition-all">
+                            <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart text-base"></i>
+                        </button>
+                    </div>
+
+                    <!-- Card Details -->
+                    <div class="p-5 flex flex-col flex-grow justify-between">
+                        <div>
+                            <div class="flex justify-between items-start gap-2 mb-1.5">
+                                <h3 class="font-serif-title font-bold text-lg text-bakery-900 line-clamp-1">${product.name}</h3>
+                                <span class="text-base font-extrabold text-bakery-700 whitespace-nowrap">${product.price.toFixed(2)} €</span>
+                            </div>
+                            <p class="text-bakery-500 text-xs leading-relaxed line-clamp-2 mb-4">${product.description}</p>
+                        </div>
+
+                        <!-- Add To Cart Controls -->
+                        <div class="pt-2 border-t border-cream-100 flex items-center justify-between">
+                            ${quantityInCart > 0 ? `
+                                <div class="flex items-center gap-2 bg-cream-100 rounded-full p-1 border border-bakery-200 w-full justify-between">
+                                    <button onclick="updateCartQuantity(${product.id}, -1)" class="w-7 h-7 rounded-full bg-white text-bakery-800 flex items-center justify-center hover:bg-bakery-200 transition-colors shadow-xs font-bold text-xs">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                    <span class="text-xs font-bold text-bakery-900 px-2">${quantityInCart} en cesta</span>
+                                    <button onclick="updateCartQuantity(${product.id}, 1)" class="w-7 h-7 rounded-full bg-bakery-600 text-white flex items-center justify-center hover:bg-bakery-700 transition-colors shadow-xs font-bold text-xs">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                            ` : `
+                                <button onclick="addToCart(${product.id})" class="w-full py-2.5 px-4 rounded-xl bg-bakery-600 hover:bg-bakery-700 active:scale-98 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow-sm">
+                                    <i class="fa-solid fa-basket-shopping"></i>
+                                    <span>Añadir al Pedido</span>
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Toggle item favorite
+        function toggleFavorite(id) {
+            if (favorites.has(id)) {
+                favorites.delete(id);
+                showToast('Eliminado de tus favoritos', 'info');
+            } else {
+                favorites.add(id);
+                showToast('¡Añadido a tus favoritos! ❤️', 'success');
+            }
+            saveFavs();
+            updateFavBadges();
+            renderProducts();
+        }
+
+        function updateFavBadges() {
+            const count = favorites.size;
+            document.getElementById('fav-count-badge').textContent = count;
+            document.getElementById('mobile-fav-badge').textContent = count;
+            
+            const favBtn = document.getElementById('fav-filter-btn');
+            const favPill = document.getElementById('fav-pill-btn');
+            
+            if (onlyFavorites) {
+                favBtn.classList.add('ring-2', 'ring-rose-400', 'bg-rose-50');
+                favPill.classList.add('bg-rose-600', 'text-white');
+                favPill.classList.remove('bg-rose-50', 'text-rose-700');
+            } else {
+                favBtn.classList.remove('ring-2', 'ring-rose-400', 'bg-rose-50');
+                favPill.classList.remove('bg-rose-600', 'text-white');
+                favPill.classList.add('bg-rose-50', 'text-rose-700');
+            }
+        }
+
+        function toggleFavoritesFilter() {
+            onlyFavorites = !onlyFavorites;
+            updateFavBadges();
+            renderProducts();
+        }
+
+        // Filtering handlers
+        function filterCategory(cat) {
+            currentCategory = cat;
+            onlyFavorites = false;
+            
+            document.querySelectorAll('.cat-pill').forEach(pill => {
+                if (pill.dataset.cat === cat) {
+                    pill.className = "cat-pill active px-4 py-2 rounded-full font-medium whitespace-nowrap bg-bakery-600 text-white transition-colors";
+                } else if (pill.dataset.cat) {
+                    pill.className = "cat-pill px-4 py-2 rounded-full font-medium whitespace-nowrap bg-cream-100 text-bakery-800 hover:bg-bakery-100 transition-colors border border-bakery-100";
+                }
+            });
+
+            updateFavBadges();
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim();
+            renderProducts();
+        }
+
+        function resetFilters() {
+            currentCategory = 'all';
+            searchQuery = '';
+            onlyFavorites = false;
+            document.getElementById('search-input').value = '';
+            filterCategory('all');
+        }
+
+        // Cart Operations
+        function addToCart(id) {
+            cart[id] = (cart[id] || 0) + 1;
+            saveCart();
+            updateCartUI();
+            renderProducts();
+            
+            const prod = products.find(p => p.id === id);
+            showToast(`Añadido ${prod ? prod.name : 'producto'} al pedido`, 'success');
+        }
+
+        function updateCartQuantity(id, delta) {
+            if (!cart[id]) return;
+            cart[id] += delta;
+            if (cart[id] <= 0) {
+                delete cart[id];
+            }
+            saveCart();
+            updateCartUI();
+            renderProducts();
+        }
+
+        function removeFromCart(id) {
+            delete cart[id];
+            saveCart();
+            updateCartUI();
+            renderProducts();
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalCount = Object.values(cart).reduce((a, b) => a + b, 0);
+            
+            // Badges
+            document.getElementById('cart-count-badge').textContent = totalCount;
+            document.getElementById('mobile-cart-badge').textContent = totalCount;
+            document.getElementById('bottom-cart-badge').textContent = totalCount;
+
+            // Submit Button status
+            const submitBtn = document.getElementById('whatsapp-submit-btn');
+            submitBtn.disabled = totalCount === 0;
+
+            if (totalCount === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-bakery-400 space-y-3">
+                        <i class="fa-solid fa-basket-shopping text-4xl"></i>
+                        <p class="text-sm">Tu cesta de la compra está vacía.</p>
+                        <p class="text-xs text-bakery-500">Selecciona algún dulce delicioso para empezar tu pedido.</p>
+                    </div>
+                `;
+                document.getElementById('cart-subtotal').textContent = '0,00 €';
+                document.getElementById('cart-total').textContent = '0,00 €';
+                return;
+            }
+
+            container.innerHTML = '';
+            let total = 0;
+
+            Object.entries(cart).forEach(([idStr, qty]) => {
+                const id = parseInt(idStr);
+                const product = products.find(p => p.id === id);
+                if (!product) return;
+
+                const itemTotal = product.price * qty;
+                total += itemTotal;
+
+                const itemEl = document.createElement('div');
+                itemEl.className = "flex items-center gap-3 p-3 bg-cream-50/80 rounded-xl border border-bakery-100";
+                itemEl.innerHTML = `
+                    <img src="${product.image}" class="w-14 h-14 rounded-lg object-cover flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80'">
+                    <div class="flex-grow min-w-0">
+                        <h4 class="font-bold text-sm text-bakery-900 truncate">${product.name}</h4>
+                        <p class="text-xs text-bakery-500">${product.price.toFixed(2)} € c/u</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <button onclick="updateCartQuantity(${id}, -1)" class="w-5 h-5 bg-white border rounded flex items-center justify-center text-xs text-bakery-700 hover:bg-bakery-100">
+                                <i class="fa-solid fa-minus text-[10px]"></i>
+                            </button>
+                            <span class="text-xs font-bold text-bakery-900">${qty}</span>
+                            <button onclick="updateCartQuantity(${id}, 1)" class="w-5 h-5 bg-white border rounded flex items-center justify-center text-xs text-bakery-700 hover:bg-bakery-100">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <span class="font-extrabold text-sm text-bakery-900 block">${itemTotal.toFixed(2)} €</span>
+                        <button onclick="removeFromCart(${id})" class="text-xs text-rose-500 hover:underline mt-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(itemEl);
+            });
+
+            document.getElementById('cart-subtotal').textContent = `${total.toFixed(2)} €`;
+            document.getElementById('cart-total').textContent = `${total.toFixed(2)} €`;
+        }
+
+        // WhatsApp Order Dispatch
+        function sendOrderViaWhatsApp() {
+            const totalCount = Object.values(cart).reduce((a, b) => a + b, 0);
+            if (totalCount === 0) return;
+
+            const name = document.getElementById('customer-name').value.trim();
+            const notes = document.getElementById('order-notes').value.trim();
+
+            let message = `🧁 *NUEVO PEDIDO - PASTELERÍA DULCE DELICIA*\n\n`;
+            if (name) message += `👤 *Cliente:* ${name}\n`;
+            if (notes) message += `📝 *Notas/Fecha:* ${notes}\n`;
+            message += `-----------------------------------\n`;
+
+            let grandTotal = 0;
+            Object.entries(cart).forEach(([idStr, qty]) => {
+                const id = parseInt(idStr);
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    const sub = product.price * qty;
+                    grandTotal += sub;
+                    message += `• ${qty}x ${product.name} (${sub.toFixed(2)} €)\n`;
+                }
+            });
+
+            message += `-----------------------------------\n`;
+            message += `💰 *TOTAL ESTIMADO: ${grandTotal.toFixed(2)} €*\n\n`;
+            message += `¡Muchas gracias! Quedo a la espera de confirmación de horario de recogida/entrega.`;
+
+            const encoded = encodeURIComponent(message);
+            const waUrl = `https://api.whatsapp.com/send?phone=${BAKERY_PHONE}&text=${encoded}`;
+            
+            window.open(waUrl, '_blank');
+            showToast('Redirigiendo a WhatsApp...', 'success');
+        }
+
+        function openWhatsAppDirect() {
+            const text = encodeURIComponent('¡Hola Pastelería Dulce Delicia! Quisiera hacer una consulta sobre sus tartas y disponibilidad.');
+            window.open(`https://api.whatsapp.com/send?phone=${BAKERY_PHONE}&text=${text}`, '_blank');
+        }
+
+        // Add Custom New Product Handler
+        function handleAddNewProduct(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('new-name').value.trim();
+            const category = document.getElementById('new-category').value;
+            const price = parseFloat(document.getElementById('new-price').value);
+            const description = document.getElementById('new-desc').value.trim() || 'Delicioso dulce preparado diariamente con las mejores materias primas.';
+            let image = document.getElementById('new-image').value.trim();
+
+            if (!image) {
+                // Fallback default image depending on category
+                image = 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
+            }
+
+            const newProduct = {
+                id: Date.now(),
+                name,
+                category,
+                price,
+                description,
+                image,
+                badge: 'Nuevo'
+            };
+
+            products.unshift(newProduct);
+            saveProducts();
+            renderProducts();
+
+            closeModal('add-product-modal');
+            document.getElementById('new-product-form').reset();
+            showToast(`¡${name} añadido al catálogo con éxito!`, 'success');
+        }
+
+        // UI Helpers & Modals
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cart-drawer');
+            const panel = document.getElementById('cart-panel');
+            
+            if (drawer.classList.contains('opacity-0')) {
+                // Open
+                drawer.classList.remove('opacity-0', 'pointer-events-none');
+                panel.classList.remove('translate-x-full');
+            } else {
+                // Close
+                panel.classList.add('translate-x-full');
+                setTimeout(() => {
+                    drawer.classList.add('opacity-0', 'pointer-events-none');
+                }, 300);
+            }
+        }
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const card = document.getElementById('add-modal-card');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-95');
+            card.classList.add('scale-100');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const card = document.getElementById('add-modal-card');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }, 200);
+        }
+
+        // Custom Toast Notification System
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-bakery-900 text-cream-50 border-amber-400' : 'bg-bakery-800 text-white border-bakery-500';
+            const icon = type === 'success' ? '<i class="fa-solid fa-circle-check text-amber-400"></i>' : '<i class="fa-solid fa-circle-info text-bakery-300"></i>';
+
+            toast.className = `px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-3 text-xs sm:text-sm font-medium transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto ${bgClass}`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            // Auto dismiss after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
